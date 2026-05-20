@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tee Haven — Premium T-Shirts</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo">Tee<span>Haven</span></a>
+      <nav class="nav">
+        <a href="#products">Shop</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button id="cart-toggle" class="cart-toggle" aria-label="Open cart">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+        </svg>
+        <span id="cart-count" class="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Wear the difference.</h1>
+      <p>Premium cotton tees designed for everyday comfort.</p>
+      <a href="#products" class="btn btn-primary">Shop the collection</a>
+    </div>
+  </section>
+
+  <main id="products" class="products container">
+    <h2>Our T-Shirts</h2>
+    <div id="product-grid" class="product-grid"></div>
+  </main>
+
+  <aside id="cart-drawer" class="cart-drawer" aria-hidden="true">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button id="cart-close" class="cart-close" aria-label="Close cart">&times;</button>
+    </div>
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cart-total">$0.00</span>
+      </div>
+      <button id="checkout-btn" class="btn btn-primary btn-block" disabled>Checkout</button>
+    </div>
+  </aside>
+  <div id="cart-overlay" class="cart-overlay"></div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Tee Haven. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
