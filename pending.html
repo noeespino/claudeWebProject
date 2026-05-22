@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Pending — Tee Haven</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .status-page { max-width: 620px; margin: 80px auto; padding: 48px 32px; background: var(--color-surface); border-radius: 12px; box-shadow: var(--shadow-md); text-align: center; }
+    .status-page h1 { margin-bottom: 16px; letter-spacing: -0.02em; }
+    .status-page p { color: var(--color-muted); margin-bottom: 12px; }
+    .status-page .meta { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85rem; background: var(--color-bg); padding: 12px; border-radius: 8px; margin: 24px 0; word-break: break-all; }
+    .status-icon { font-size: 3rem; margin-bottom: 16px; color: #b58900; }
+    .oxxo-callout { text-align: left; background: #fff7e0; border: 1px solid #f0d97a; border-radius: 8px; padding: 16px 20px; margin: 24px 0; }
+    .oxxo-callout strong { display: block; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">Tee<span>Haven</span></a>
+    </div>
+  </header>
+
+  <main class="status-page">
+    <div class="status-icon">⏳</div>
+    <h1>Almost there — payment pending</h1>
+    <p>We're waiting for your payment to clear.</p>
+    <div class="oxxo-callout">
+      <strong>Paying with OXXO?</strong>
+      Take the voucher MercadoPago generated for you to any OXXO store and pay in cash within 3 days. Your order will be confirmed automatically once the payment is processed (usually within 1 business day).
+    </div>
+    <div class="meta" id="order-meta">Loading order details…</div>
+    <a href="/" class="btn btn-primary">Back to shop</a>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const paymentId = params.get("payment_id");
+    const status = params.get("status");
+    const ref = params.get("external_reference");
+    document.getElementById("order-meta").innerHTML = `
+      <div><strong>Order:</strong> ${ref || "—"}</div>
+      <div><strong>Payment:</strong> ${paymentId || "—"}</div>
+      <div><strong>Status:</strong> ${status || "pending"}</div>
+    `;
+  </script>
+</body>
+</html>

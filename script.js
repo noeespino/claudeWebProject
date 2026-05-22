@@ -1,13 +1,17 @@
 const PRODUCTS = [
-  { id: 1, name: "Classic White Tee",    desc: "Soft 100% organic cotton everyday essential.", price: 24.99, color: "#f5f5f0", stroke: "#1a1a1a" },
-  { id: 2, name: "Midnight Black Tee",   desc: "Pure black, premium combed cotton.",            price: 26.99, color: "#1a1a1a", stroke: "#ffffff" },
-  { id: 3, name: "Forest Green Tee",     desc: "Earthy tones, sustainably sourced.",            price: 28.99, color: "#2d5a3d", stroke: "#ffffff" },
-  { id: 4, name: "Sunset Orange Tee",    desc: "Bold and vibrant for warm days.",               price: 27.99, color: "#e67e3c", stroke: "#1a1a1a" },
-  { id: 5, name: "Ocean Blue Tee",       desc: "Cool blue, breathable fabric.",                 price: 26.99, color: "#3a6ea5", stroke: "#ffffff" },
-  { id: 6, name: "Heather Grey Tee",     desc: "Versatile heather grey staple.",                price: 25.99, color: "#9aa0a6", stroke: "#1a1a1a" },
-  { id: 7, name: "Burgundy Red Tee",     desc: "Rich deep red, soft hand-feel.",                price: 28.99, color: "#7a1f2b", stroke: "#ffffff" },
-  { id: 8, name: "Mustard Yellow Tee",   desc: "Statement piece with a vintage feel.",          price: 27.99, color: "#d4a017", stroke: "#1a1a1a" },
+  { id: 1, name: "Classic White Tee",    desc: "Soft 100% organic cotton everyday essential.", price: 449, color: "#f5f5f0", stroke: "#1a1a1a" },
+  { id: 2, name: "Midnight Black Tee",   desc: "Pure black, premium combed cotton.",            price: 469, color: "#1a1a1a", stroke: "#ffffff" },
+  { id: 3, name: "Forest Green Tee",     desc: "Earthy tones, sustainably sourced.",            price: 509, color: "#2d5a3d", stroke: "#ffffff" },
+  { id: 4, name: "Sunset Orange Tee",    desc: "Bold and vibrant for warm days.",               price: 489, color: "#e67e3c", stroke: "#1a1a1a" },
+  { id: 5, name: "Ocean Blue Tee",       desc: "Cool blue, breathable fabric.",                 price: 469, color: "#3a6ea5", stroke: "#ffffff" },
+  { id: 6, name: "Heather Grey Tee",     desc: "Versatile heather grey staple.",                price: 449, color: "#9aa0a6", stroke: "#1a1a1a" },
+  { id: 7, name: "Burgundy Red Tee",     desc: "Rich deep red, soft hand-feel.",                price: 509, color: "#7a1f2b", stroke: "#ffffff" },
+  { id: 8, name: "Mustard Yellow Tee",   desc: "Statement piece with a vintage feel.",          price: 489, color: "#d4a017", stroke: "#1a1a1a" },
 ];
+
+function formatMXN(n) {
+  return `$${n.toFixed(2)} MXN`;
+}
 
 function tshirtSVG(fill, stroke) {
   return `
@@ -46,7 +50,7 @@ function renderProducts() {
         <div class="product-name">${p.name}</div>
         <div class="product-desc">${p.desc}</div>
         <div class="product-footer">
-          <span class="product-price">$${p.price.toFixed(2)}</span>
+          <span class="product-price">${formatMXN(p.price)}</span>
           <button class="add-btn" data-id="${p.id}">Add to cart</button>
         </div>
       </div>
@@ -100,7 +104,7 @@ function renderCart() {
 
   if (cart.length === 0) {
     itemsEl.innerHTML = `<div class="cart-empty">Your cart is empty.</div>`;
-    totalEl.textContent = "$0.00";
+    totalEl.textContent = formatMXN(0);
     checkoutBtn.disabled = true;
     return;
   }
@@ -116,7 +120,7 @@ function renderCart() {
         <div class="cart-item-img">${tshirtSVG(p.color, p.stroke)}</div>
         <div class="cart-item-info">
           <div class="cart-item-name">${p.name}</div>
-          <div class="cart-item-price">$${p.price.toFixed(2)} each</div>
+          <div class="cart-item-price">${formatMXN(p.price)} each</div>
           <div class="cart-item-controls">
             <button class="qty-btn" data-action="dec" data-id="${p.id}">&minus;</button>
             <span class="qty-value">${item.qty}</span>
@@ -128,7 +132,7 @@ function renderCart() {
     `;
   }).join("");
 
-  totalEl.textContent = `$${total.toFixed(2)}`;
+  totalEl.textContent = formatMXN(total);
   checkoutBtn.disabled = false;
 
   itemsEl.querySelectorAll("[data-action]").forEach(btn => {
@@ -156,8 +160,30 @@ function initEvents() {
   document.getElementById("cart-toggle").addEventListener("click", openCart);
   document.getElementById("cart-close").addEventListener("click", closeCart);
   document.getElementById("cart-overlay").addEventListener("click", closeCart);
-  document.getElementById("checkout-btn").addEventListener("click", () => {
-    alert(`Thanks! Checkout flow not implemented yet.\nOrder total: ${document.getElementById("cart-total").textContent}`);
+  document.getElementById("checkout-btn").addEventListener("click", async () => {
+    const btn = document.getElementById("checkout-btn");
+    const originalLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Redirecting…";
+    try {
+      const res = await fetch("/api/create-preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: cart }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || "Checkout failed");
+      }
+      const data = await res.json();
+      if (!data.init_point) throw new Error("Missing checkout URL");
+      window.location.href = data.init_point;
+    } catch (err) {
+      console.error("Checkout error", err);
+      alert("Could not start checkout. Please try again.");
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
   });
 }
 
